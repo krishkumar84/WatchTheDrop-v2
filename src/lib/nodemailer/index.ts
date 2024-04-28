@@ -88,7 +88,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
   maxConnections: 1
-})
+});
 
 export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) => {
   const mailOptions = {
@@ -96,11 +96,14 @@ export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) =>
     to: sendTo,
     html: emailContent.body,
     subject: emailContent.subject,
-  }
+  };
 
-  transporter.sendMail(mailOptions, (error: any, info: any) => {
-    if(error) return console.log(error);
-    
+  try {
+    const info = await transporter.sendMail(mailOptions);
     console.log('Email sent: ', info);
-  })
-}
+    return info; 
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error; 
+  }
+};
