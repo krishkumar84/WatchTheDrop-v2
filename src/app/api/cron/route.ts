@@ -6,7 +6,7 @@ import { scrapeAmazonProducts } from "@/lib/scrape";
 import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
 import Product from "@/models/product.model";
 
-export const maxDuration = 300; 
+export const maxDuration = 10; 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
