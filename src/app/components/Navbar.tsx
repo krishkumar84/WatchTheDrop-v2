@@ -21,7 +21,7 @@ const navIcons = [
       />
 
       <p className="text-[21px] text-secondary font-bold">
-        Price<span className='text-primary'>Wise</span>
+        WatchThe<span className='text-primary'>Drop</span>
       </p>
     </Link>
 
