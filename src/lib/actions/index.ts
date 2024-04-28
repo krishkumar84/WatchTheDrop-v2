@@ -41,6 +41,7 @@ export async function scrapeAndStoreProducts (producturl:string) {
     );
 
     revalidatePath(`/products/${newProduct._id}`);
+    revalidatePath("/", "layout");
   } catch (error: any) {
     throw new Error(`Failed to create/update product: ${error.message}`)
   }
