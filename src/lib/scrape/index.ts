@@ -2,6 +2,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { extractCurrency, extractDescription, extractPrice } from "../utlis";
+import { getJson } from "serpapi";
 
 export async function scrapeAmazonProducts(url: string) {
   const username = String(process.env.BRIGHT_DATA_USERNAME);
@@ -78,4 +79,114 @@ export async function scrapeAmazonProducts(url: string) {
   } catch (error: any) {
     throw new Error(`error in fetching product ${error.message}`);
   }
+}
+
+
+// export async function scrapePriceBeforeProducts(url: string) {
+//   const username = String(process.env.BRIGHT_DATA_USERNAME);
+//   const password = String(process.env.BRIGHT_DATA_PASSWORD);
+//   const port = 22225;
+//   const session_id = (1000000 * Math.random()) | 0;
+
+//   const options = {
+//     auth: {
+//       username: `${username}-session-${session_id}`,
+//       password,
+//     },
+//     host: "brd.superproxy.io",
+//     port,
+//     rejectUnauthorized: false,
+//   };
+
+//   try {
+//     const response = await axios.get(url, options);
+//     const $ = cheerio.load(response.data);
+
+//     const currentPriceElement = $('.js-product-price');
+//     const previousPriceElement = $('.lowest').next();
+//     const discountElement = $('.highest').next();
+//     const chartid = $("#price_history_chart");
+
+
+    
+//     const currentPrice = currentPriceElement.text();
+//     const previousPrice = previousPriceElement.text();
+//     const discount = discountElement.text();
+//     const id = chartid.text();
+    
+//     console.log(currentPrice); // Outputs: "Current Price: $123.45"
+//     console.log(previousPrice); // Outputs: "Previous Price: $150.00"
+//     console.log(discount);
+//     console.log(id);
+
+//      // console.log(data)
+//      // return data;
+//   } catch (error: any) {
+//     throw new Error(`error in fetching product ${error.message}`);
+//   }
+// }
+
+export async function getGoogleresult(url:string) {
+  const username = String(process.env.BRIGHT_DATA_USERNAME);
+  const password = String(process.env.BRIGHT_DATA_PASSWORD);
+  const usernameserp = String(process.env.BRIGHT_DATA_SERP_USERNAME);
+  const passwordserp = String(process.env.BRIGHT_DATA_SERP_PASSWORD);
+  const port = 22225;
+  const session_id = (1000000 * Math.random()) | 0;
+
+  const options = {
+    auth: {
+      username: `${username}-session-${session_id}`,
+      password,
+    },
+    host: "brd.superproxy.io",
+    port,
+    rejectUnauthorized: false,
+  };
+  const optionserp = {
+    auth: {
+      username: `${usernameserp}-session-${session_id}`,
+      password: passwordserp,
+    },
+    host: "brd.superproxy.io",
+    port,
+    rejectUnauthorized: false,
+  };
+
+  try {
+    const response = await axios.get(url, options);
+    const $ = cheerio.load(response.data);
+
+    const title = $("#productTitle").text().trim();
+
+    const data = {
+        url,
+        title,
+      }
+
+      console.log(data)
+
+      const titleWords = title.split(' ');
+      const query = titleWords.slice(0, 5).join(' ');
+
+      // const name = `http://www.google.com/search?q=${encodeURIComponent(query)}%20site:pricehistoryapp.com&brd_json=1`
+
+      // const result = await axios.get(name, optionserp);
+
+      // console.log(result.data);
+      const searchTerm = `${encodeURIComponent(query)}%20site:pricehistoryapp.com`
+      const result = await getJson("google", {
+        api_key: process.env['API_KEY'], 
+        q: searchTerm,
+      });
+      console.log(result.organic_results);
+      const jsonresult = result.organic_results;
+      const urlproduct = jsonresult[0].link;
+      console.log(urlproduct)
+      
+      // return data;
+  } catch (error: any) {
+    throw new Error(`error in fetching product ${error.message}`);
+  }
+
 }

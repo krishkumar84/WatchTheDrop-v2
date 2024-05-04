@@ -1,5 +1,5 @@
 "use server"
-import { scrapeAmazonProducts } from "../scrape";
+import { scrapeAmazonProducts, getGoogleresult } from "../scrape";
 import { connectToDB } from "../mongoose";
 import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utlis";
 import Product from "@/models/product.model";
@@ -12,6 +12,10 @@ export async function scrapeAndStoreProducts (producturl:string) {
   try {
     connectToDB();
     const scrapedProduct = await scrapeAmazonProducts(producturl);
+
+    const priceScrapeProduct = await getGoogleresult(producturl);
+
+    console.log(priceScrapeProduct);
 
     if(!scrapedProduct) return;
 

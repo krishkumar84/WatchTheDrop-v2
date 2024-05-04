@@ -20,6 +20,7 @@ const  Home = async () => {
                 height={16}
               />
             </p>
+            
 
             <h1 className="mt-4 text-6xl leading-[72px] font-bold tracking-[-1.2px] text-gray-900">
               Unleash the Power of

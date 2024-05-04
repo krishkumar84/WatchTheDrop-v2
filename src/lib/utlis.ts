@@ -111,4 +111,3 @@ export function extractPrice(...elements: any) {
   
     return null;
   };
-  
