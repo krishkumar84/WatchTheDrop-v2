@@ -53,6 +53,23 @@ export function extractPrice(...elements: any) {
     }
     return "";
   }
+
+  export function extractContent($: any) {
+    const parentDiv = $("#__next"); // Replace "parent-selector" with the appropriate selector for the parent div
+
+    if (parentDiv.length > 0) {
+        const thirdChildDiv = parentDiv.find("div:nth-child(3)"); // Target the third child div within the parent div
+
+        if (thirdChildDiv.length > 0) {
+            const content = thirdChildDiv.html(); // Get the HTML content of the third child div
+            return content;
+        }
+    }
+
+    return "";
+}
+
+
   
   export function getHighestPrice(priceList: PriceHistoryItem[]) {
     let highestPrice = priceList[0];

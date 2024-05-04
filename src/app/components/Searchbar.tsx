@@ -1,5 +1,5 @@
 "use client"
-
+import { useRouter } from 'next/navigation';
 import { scrapeAndStoreProducts } from '@/lib/actions';
 // import { scrapeAndStoreProduct } from '@/lib/actions';
 import { FormEvent, useState } from 'react'
@@ -26,9 +26,11 @@ const isValidAmazonProductURL = (url: string) => {
 const Searchbar = () => {
   const [searchPrompt, setSearchPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
 
     const isValidLink = isValidAmazonProductURL(searchPrompt);
 
@@ -39,6 +41,12 @@ const Searchbar = () => {
 
       // Scrape the product page
       const product = await scrapeAndStoreProducts(searchPrompt);
+      if (product && product.redirectUrl) {
+        console.log(product.redirectUrl);
+        router.push(`/products/${product.redirectUrl}`);
+    } else {
+        alert('Product or redirectUrl not available');
+    }
     // alert("valid")
     } catch (error) {
       console.log(error);

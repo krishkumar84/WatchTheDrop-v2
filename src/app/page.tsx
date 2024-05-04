@@ -42,7 +42,7 @@ const  Home = async () => {
         <h2 className="text-secondary text-[32px] font-semibold">Trending</h2>
 
         <div className="flex flex-wrap items-center justify-evenly gap-x-8 gap-y-16">
-          {allProducts?.map((product) => (
+          {allProducts?.reverse().map((product) => (
             <ProductCard key={product._id} product={product} />
             // <h1>{product.title}</h1>
           ))}

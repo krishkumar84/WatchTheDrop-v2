@@ -23,7 +23,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
     <div className="flex flex-col gap-16 flex-wrap px-6 md:px-20 py-24">
       <div className="flex gap-28 xl:flex-row flex-col">
         <div className="flex-grow xl:max-w-[50%] max-w-full py-16  rounded-[17px]">
-          <Image 
+          <Image
             src={product.image}
             alt={product.title}
             width={580}
@@ -50,7 +50,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 px-3 py-2 bg-[#FFF0F0] rounded-10">
-                <Image 
+                <Image
                   src="/assets/icons/red-heart.svg"
                   alt="heart"
                   width={20}
@@ -63,7 +63,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
               </div>
 
               <div className="p-2 bg-white-200 rounded-10">
-                <Image 
+                <Image
                   src="/assets/icons/bookmark.svg"
                   alt="bookmark"
                   width={20}
@@ -72,7 +72,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
               </div>
 
               <div className="p-2 bg-white-200 rounded-10">
-                <Image 
+                <Image
                   src="/assets/icons/share.svg"
                   alt="share"
                   width={20}
@@ -95,19 +95,19 @@ const ProductDetails = async ({ params: { id } }: Props) => {
             <div className="flex flex-col gap-4">
               <div className="flex gap-3">
                 <div className="flex items-center gap-2 px-3 py-2 bg-[#FBF3EA] rounded-[27px]">
-                  <Image 
+                  <Image
                     src="/assets/icons/star.svg"
                     alt="star"
                     width={16}
                     height={16}
                   />
                   <p className="text-sm text-primary-orange font-semibold">
-                    {product.stars || '25'}
+                    {product.stars || "25"}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 px-3 py-2 bg-white-200 rounded-[27px]">
-                  <Image 
+                  <Image
                     src="/assets/icons/comment.svg"
                     alt="comment"
                     width={16}
@@ -120,38 +120,46 @@ const ProductDetails = async ({ params: { id } }: Props) => {
               </div>
 
               <p className="text-sm text-black opacity-50">
-                <span className="text-primary-green font-semibold">93% </span> of
-                buyers have recommeded this.
+                <span className="text-primary-green font-semibold">93% </span>{" "}
+                of buyers have recommeded this.
               </p>
             </div>
           </div>
 
           <div className="my-7 flex flex-col gap-5">
             <div className="flex gap-5 flex-wrap">
-              <PriceInfoCard 
+              <PriceInfoCard
                 title="Current Price"
                 iconSrc="/assets/icons/price-tag.svg"
-                value={`${product.currency} ${formatNumber(product.currentPrice)}`}
+                value={`${product.currency} ${formatNumber(
+                  product.currentPrice
+                )}`}
               />
-              <PriceInfoCard 
+              <PriceInfoCard
                 title="Average Price"
                 iconSrc="/assets/icons/chart.svg"
-                value={`${product.currency} ${formatNumber(product.averagePrice)}`}
+                value={`${product.currency} ${formatNumber(
+                  product.averagePrice
+                )}`}
               />
-              <PriceInfoCard 
+              <PriceInfoCard
                 title="Highest Price"
                 iconSrc="/assets/icons/arrow-up.svg"
-                value={`${product.currency} ${formatNumber(product.highestPrice)}`}
+                value={`${product.currency} ${formatNumber(
+                  product.highestPrice
+                )}`}
               />
-              <PriceInfoCard 
+              <PriceInfoCard
                 title="Lowest Price"
                 iconSrc="/assets/icons/arrow-down.svg"
-                value={`${product.currency} ${formatNumber(product.lowestPrice)}`}
+                value={`${product.currency} ${formatNumber(
+                  product.lowestPrice
+                )}`}
               />
             </div>
           </div>
 
-           <Modal productId={id} /> 
+          <Modal productId={id} />
         </div>
       </div>
 
@@ -162,12 +170,12 @@ const ProductDetails = async ({ params: { id } }: Props) => {
           </h3>
 
           <div className="flex flex-col gap-4">
-            {product?.description?.split('\n')}
+            {product?.description?.split("\n")}
           </div>
         </div>
 
         <button className="py-4 px-4 bg-black hover:bg-opacity-70 rounded-[30px] text-white text-lg font-semibold w-fit mx-auto flex items-center justify-center gap-3 min-w-[200px]">
-          <Image 
+          <Image
             src="/assets/icons/bag.svg"
             alt="check"
             width={22}
@@ -179,20 +187,37 @@ const ProductDetails = async ({ params: { id } }: Props) => {
           </Link>
         </button>
       </div>
-
+      {product.geturl ? ( // Check if graphUrl is not null and has a value
+        <div // Render a <div> element
+          dangerouslySetInnerHTML={{
+            // Set the inner HTML of the <div> element
+            __html: `<iframe id="price_frame" src="https://pricehistoryapp.com/embed/${
+              // Define the HTML content as a string with embedded JavaScript variables
+              product.geturl // Extract the graph ID from the graphUrl
+            }" width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no"></iframe><script>const allLinks=document.querySelectorAll('a')  ; // Start of JavaScript code block
+allLinks.forEach(ele=>{ // Loop through all links found on the page
+  if(ele.href=='https://pricehistoryapp.com/?ref=embed'){ // Check if the link is the one to be hidden
+    ele.style.display='none' // Hide the link by setting its display style to 'none'
+  }
+})</script>`, // End of HTML content and JavaScript code block
+          }}
+        />
+      ) : null}
       {similarProducts && similarProducts?.length > 0 && (
         <div className="py-14 flex flex-col gap-2 w-full">
-          <p className="text-secondary text-[32px] font-semibold">Similar Products</p>
+          <p className="text-secondary text-[32px] font-semibold">
+            Similar Products
+          </p>
 
           <div className="flex flex-wrap items-center justify-between gap-10 mt-7 w-full">
-            {similarProducts?.map((product:any) => (
+            {similarProducts?.reverse().map((product: any) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
         </div>
-      )} 
+      )}
     </div>
-  )
+  );
 }
 
 export default ProductDetails
