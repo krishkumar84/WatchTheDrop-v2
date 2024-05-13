@@ -1,5 +1,5 @@
 "use server"
-import { scrapeAmazonProducts, getGoogleresult } from "../scrape";
+import { getGoogleresult, googleShoppingResult, scrapeAmazonProducts} from "../scrape";
 import { connectToDB } from "../mongoose";
 import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utlis";
 import Product from "@/models/product.model";
@@ -10,7 +10,22 @@ export async function scrapeAndStoreProducts(producturl: string) {
   if (!producturl) return null;
   try {
       connectToDB();
-      const scrapedProduct = await scrapeAmazonProducts(producturl);
+      // const scrapedProduct = await scrapeAmazonProducts(producturl);
+      const url = new URL(producturl);
+        const hostname = url.hostname;
+
+        let scrapedProduct;
+
+        if (hostname.includes('amazon.com') || hostname.includes('amazon.') || hostname.endsWith('amazon')) {
+            console.log("amazon")
+            scrapedProduct = await scrapeAmazonProducts(producturl);
+        } else if (hostname.includes('flipkart.com') || hostname.includes('flipkart.') || hostname.endsWith('flipkart')) {
+          console.log("flipkart")
+          return null;
+        } else {
+            // Handle unsupported URLs or other cases
+            return null;
+        }
 
       if (!scrapedProduct) return null;
 

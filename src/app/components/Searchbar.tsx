@@ -12,7 +12,10 @@ const isValidAmazonProductURL = (url: string) => {
     if(
       hostname.includes('amazon.com') || 
       hostname.includes ('amazon.') || 
-      hostname.endsWith('amazon')
+      hostname.endsWith('amazon') ||
+      hostname.includes('flipkart.com') || 
+      hostname.includes ('flipkart.') || 
+      hostname.endsWith('flipkart')
     ) {
       return true;
     }
@@ -34,20 +37,24 @@ const Searchbar = () => {
 
     const isValidLink = isValidAmazonProductURL(searchPrompt);
 
-    if(!isValidLink) return alert('Please provide a valid Amazon link')
+    if(!isValidLink) router.push(`/shopping/${searchPrompt}`);
 
     try {
       setIsLoading(true);
 
       // Scrape the product page
-      const product = await scrapeAndStoreProducts(searchPrompt);
+      if(isValidLink){
+
+        const product = await scrapeAndStoreProducts(searchPrompt);
+      
       if (product && product.redirectUrl) {
         console.log(product.redirectUrl);
         router.push(`/products/${product.redirectUrl}`);
     } else {
         alert('Product or redirectUrl not available');
     }
-    // alert("valid")
+    alert("valid")
+      }
     } catch (error) {
       console.log(error);
     } finally {

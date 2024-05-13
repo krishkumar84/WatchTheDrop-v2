@@ -86,6 +86,24 @@ export async function scrapeAmazonProducts(url: string) {
     throw new Error(`error in fetching product ${error.message}`);
   }
 }
+export async function googleShoppingResult(title: string) {
+  try {
+    const json = await getJson({
+        engine: "google_shopping",
+        q: `${title}`, 
+        location: "India",
+        hl: "en",
+        gl: "us",
+        api_key: process.env.API_KEY,
+    });
+
+    // console.log(json["shopping_results"])
+    console.log("shopping_results")
+     return json["shopping_results"];
+} catch (error) {
+    console.error("Error occurred while scraping:", error);
+}
+}
 
 
 export async function getGoogleresult(title:string) {
