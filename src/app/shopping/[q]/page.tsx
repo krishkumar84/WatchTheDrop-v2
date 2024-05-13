@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect,useState } from "react";
 import { usePathname } from 'next/navigation'
 
-  const shoppingResult = () => {
+  const ShoppingResult = () => {
   const title = usePathname();
     console.log(title);
     const [shopResult, setShopResult] =useState([])
@@ -59,4 +59,4 @@ return(
 );
 }
 
-export default shoppingResult;
+export default ShoppingResult;
