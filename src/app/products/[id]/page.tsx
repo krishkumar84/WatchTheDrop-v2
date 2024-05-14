@@ -7,17 +7,20 @@ import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Toaster,toast } from "sonner";
 
 type Props = {
   params: { id: string }
 }
 
 const ProductDetails = async ({ params: { id } }: Props) => {
+  
   const product: Product = await getProductById(id);
 
   if(!product) redirect('/')
 
    const similarProducts = await getSimilarProducts(id);
+   
 
   return (
     <div className="flex flex-col gap-16 flex-wrap px-6 md:px-20 py-24">
@@ -88,7 +91,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 {product.currency} {formatNumber(product.currentPrice)}
               </p>
               <p className="text-[21px] text-black opacity-50 line-through">
-                {product.currency} {formatNumber(product.originalPrice)}
+                {product.currency} {formatNumber(product.highestPrice)}
               </p>
             </div>
 

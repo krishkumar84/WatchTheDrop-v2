@@ -3,6 +3,26 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import { extractContent, extractCurrency, extractDescription, extractPrice } from "../utlis";
 import { getJson } from "serpapi";
+import { connectToDB } from "../mongoose";
+import { revalidatePath } from "next/cache";
+import Product from "@/models/product.model";
+interface Product {
+  position: number;
+  title: string;
+  link: string;
+  product_link: string;
+  product_id: string;
+  serpapi_product_api: string;
+  source: string;
+  price: string;
+  extracted_price: number;
+  second_hand_condition?: string;
+  rating?: number;
+  reviews?: number;
+  extensions: any[];
+  thumbnail: string;
+  delivery: string;
+}
 
 export async function scrapeAmazonProducts(url: string) {
   const username = String(process.env.BRIGHT_DATA_USERNAME);
@@ -86,19 +106,88 @@ export async function scrapeAmazonProducts(url: string) {
     throw new Error(`error in fetching product ${error.message}`);
   }
 }
+
+export async function googleProductSave(ProductGoogle:Product){
+  console.log(Product)
+  try {
+    connectToDB();
+    const fullurl = await getGoogleresult(ProductGoogle.title);
+    const parts = fullurl.split('/');
+    const geturl = parts.slice(4).join('/');
+    console.log(geturl);
+    
+    const data = {
+      url:ProductGoogle.link,
+      geturl,
+      currency: '₹',
+      image: ProductGoogle.thumbnail,
+      title:ProductGoogle.title,
+      currentPrice: ProductGoogle.extracted_price,
+      originalPrice: ProductGoogle.extracted_price,
+      priceHistory: [],
+      discountRate: ProductGoogle.extracted_price + 1000,
+      category: "Tech",
+      reviewsCount:ProductGoogle.reviews,
+      stars: ProductGoogle.rating,
+      isOutOfStock: false,
+      description:ProductGoogle.title,
+      lowestPrice: ProductGoogle.extracted_price -1000,
+      highestPrice: (ProductGoogle.extracted_price + 1000),
+      averagePrice: ProductGoogle.extracted_price,
+    }
+
+    let product = data;
+
+      const existingProduct = await Product.findOne({ url: product.url });
+
+      if (existingProduct) {
+          const updatedPriceHistory: any = [
+              ...existingProduct.priceHistory,
+              { price: product.currentPrice }
+          ];
+
+          product = {
+              ...product,
+              priceHistory: updatedPriceHistory,
+              lowestPrice: ProductGoogle.extracted_price,
+              highestPrice: ProductGoogle.extracted_price,
+              averagePrice: ProductGoogle.extracted_price,
+          };
+      }
+
+      const newProduct = await Product.findOneAndUpdate(
+          { url: product.url },
+          product,
+          { upsert: true, new: true }
+      );
+      const redirectUrl = newProduct._id.toString();
+      revalidatePath(`/products/${redirectUrl}`);
+      revalidatePath("/", "layout");
+      console.log(redirectUrl)
+      return  redirectUrl ; 
+    
+    // Handle the response data as needed
+  } catch (error) {
+    console.error("Error occurred while fetching data:", error);
+  }
+
+}
 export async function googleShoppingResult(title: string) {
   try {
     const json = await getJson({
         engine: "google_shopping",
         q: `${title}`, 
-        location: "India",
-        hl: "en",
-        gl: "us",
+        location: "India", 
+        hl: "en", 
+        gl: "in",
         api_key: process.env.API_KEY,
+        num: 30,
     });
 
-    // console.log(json["shopping_results"])
-    console.log("shopping_results")
+    // //  console.log(json["shopping_results"])
+    // console.log(json);
+    //  console.log(json["related_shopping_results"]);
+    // console.log(json["related_searches"]);
      return json["shopping_results"];
 } catch (error) {
     console.error("Error occurred while scraping:", error);

@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { scrapeAndStoreProducts } from '@/lib/actions';
 // import { scrapeAndStoreProduct } from '@/lib/actions';
 import { FormEvent, useState } from 'react'
+import { toast } from 'sonner';
 
 const isValidAmazonProductURL = (url: string) => {
   try {
@@ -45,15 +46,23 @@ const Searchbar = () => {
       // Scrape the product page
       if(isValidLink){
 
+        const promise = () => new Promise((resolve) => setTimeout(() => resolve({ name: 'Sonner' }), 2000));
+        toast.promise(promise, {
+        loading: 'Loading... redirecting',
+        position: 'top-center',
+        success: () => {
+        return `redirecting on yours Product page`;
+       },
+    error: 'Error',
+});
         const product = await scrapeAndStoreProducts(searchPrompt);
-      
       if (product && product.redirectUrl) {
         console.log(product.redirectUrl);
         router.push(`/products/${product.redirectUrl}`);
     } else {
         alert('Product or redirectUrl not available');
     }
-    alert("valid")
+    // alert("valid")
       }
     } catch (error) {
       console.log(error);
