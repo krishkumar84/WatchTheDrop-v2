@@ -1,7 +1,7 @@
 "use client"
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; 
-import { Carousel } from 'react-responsive-carousel';
+// import { Carousel } from 'react-responsive-carousel';
 import Image from "next/image";
 
 const heroImages = [
@@ -14,8 +14,8 @@ const heroImages = [
 
 const HeroCarousel = () => {
   return (
-    <div className="relative sm:px-10 py-5 sm:pt-20 pb-5 max-w-[560px] h-[700px] w-full bg-[#F2F4F7] rounded-[30px] sm:mx-auto">
-      <Carousel
+    <div className="relative hidden sm:flex  max-w-[700px]  h-[600px] w-full bg-transparent rounded-[30px] ">
+       {/* <Carousel
         showThumbs={false}
          autoPlay
         infiniteLoop
@@ -33,15 +33,15 @@ const HeroCarousel = () => {
             key={image.alt}
           />
         ))}
-      </Carousel>
+      </Carousel> */}
 
       <Image 
-        src="assets/icons/hand-drawn-arrow.svg"
+        src="/assets/images/iphone.png"
         alt="arrow"
-        width={175}
-        height={175}
-        className="max-xl:hidden absolute -left-[15%] bottom-0 z-0"
-      />
+        width={1000}
+        height={1000}
+        className="w-full h-full"
+      /> 
     </div>
   )
 }

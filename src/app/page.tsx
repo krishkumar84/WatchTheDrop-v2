@@ -8,10 +8,14 @@ const  Home = async () => {
   const allProducts = await getAllProducts();
   return (
    <>
-   <section className="px-6 md:px-20 py-24">
-        <div className="flex max-xl:flex-col gap-16">
-          <div className="flex flex-col justify-center"> 
-            <p className="flex gap-2 text-sm font-medium text-primary">
+   <section className=" md:pl-12 " style={{
+    backgroundImage: `url(${'/assets/images/Backgroundimage.png'})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover'
+  }}>
+        <div className="flex max-xl:flex-col pb-12 gap-16" >
+          <div className="flex flex-col pb-6 sm:pb-2 justify-center"> 
+            <p className="flex gap-2 text-sm pb-12 text-gray-700 font-medium text-primary">
               Smart Shopping Starts Here:
               <Image 
                 src="/assets/icons/arrow-right.svg"
