@@ -75,7 +75,7 @@ interface Product {
     
     
 return(
-  <div className="flex flex-wrap items-center justify-evenly px-8 gap-x-8 gap-y-16">
+  <div className="flex flex-wrap pt-24 items-center justify-evenly px-8 gap-x-8 gap-y-16">
     {shopResult.map((product:any, index:any) => (
         <div key={index} className="sm:w-[292px] sm:max-w-[292px] w-full flex-1 flex flex-col gap-4 rounded-md" >
      <Link href={"#"} onClick={() => handleClick(product)} className="sm:w-[292px] sm:max-w-[292px] w-full flex-1 flex flex-col gap-4 rounded-md">

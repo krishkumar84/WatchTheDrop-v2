@@ -1,4 +1,10 @@
 "use server"
+import { redis } from "../../app/config/ratelimit";
+import { headers } from "next/headers";
+import { Ratelimit } from "@upstash/ratelimit";
+
+
+
 
 import { EmailContent, EmailProductInfo, NotificationType } from '@/types';
 import nodemailer from 'nodemailer';
@@ -10,10 +16,16 @@ const Notification = {
   THRESHOLD_MET: 'THRESHOLD_MET',
 }
 
+const ratelimit = new Ratelimit({ 
+  redis: redis, 
+  limiter: Ratelimit.fixedWindow(1, '300s'), 
+});
+
 export async function generateEmailBody(
   product: EmailProductInfo,
   type: NotificationType
   ) {
+    
   const THRESHOLD_PERCENTAGE = 40;
   const shortenedTitle =
     product.title.length > 20
@@ -91,6 +103,16 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) => {
+  const ip = headers().get("x-forwarded-for") ;
+  console.log(ip);
+  const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip!);
+  console.log(success, pending, limit, reset, remaining);
+  
+  if (!success) {
+    // Router.push("/blocked");
+    return {error: "bhai ab try mt kr"};
+  }
+  
   const mailOptions = {
     from: 'krish221200867@gmail.com',
     to: sendTo,

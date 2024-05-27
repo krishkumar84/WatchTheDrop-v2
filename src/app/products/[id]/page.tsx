@@ -23,7 +23,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
    
 
   return (
-    <div className="flex flex-col gap-16 flex-wrap px-6 md:px-20 py-24">
+    <div className="flex  flex-col gap-16 flex-wrap px-6 md:px-20 py-32">
       <div className="flex gap-28 xl:flex-row flex-col">
         <div className="flex-grow xl:max-w-[50%] max-w-full py-16  rounded-[17px]">
           <Image

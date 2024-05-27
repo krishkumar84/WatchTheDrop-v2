@@ -24,6 +24,16 @@ interface Product {
   delivery: string;
 }
 
+import { redis } from "../../app/config/ratelimit";
+import { headers } from "next/headers";
+import { Ratelimit } from "@upstash/ratelimit";
+
+
+const ratelimit = new Ratelimit({ 
+  redis: redis, 
+  limiter: Ratelimit.fixedWindow(4, '100s'), 
+});
+
 export async function scrapeAmazonProducts(url: string) {
   const username = String(process.env.BRIGHT_DATA_USERNAME);
   const password = String(process.env.BRIGHT_DATA_PASSWORD);
@@ -173,6 +183,16 @@ export async function googleProductSave(ProductGoogle:Product){
 
 }
 export async function googleShoppingResult(title: string) {
+  const ip = headers().get("x-forwarded-for") ;
+  console.log(ip);
+  const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip!);
+  console.log(success, pending, limit, reset, remaining);
+  
+  if (!success) {
+    // Router.push("/blocked");
+    return {error: "bhai ab try mt kr"};
+  }
+  
   try {
     const json = await getJson({
         engine: "google_shopping",
@@ -196,6 +216,16 @@ export async function googleShoppingResult(title: string) {
 
 
 export async function getGoogleresult(title:string) {
+  const ip = headers().get("x-forwarded-for") ;
+  console.log(ip);
+  const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip!);
+  console.log(success, pending, limit, reset, remaining);
+  
+  if (!success) {
+    // Router.push("/blocked");
+    return {error: "bhai ab try mt kr"};
+  }
+  
   
   try {
     console.log(title)

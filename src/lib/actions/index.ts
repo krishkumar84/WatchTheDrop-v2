@@ -1,12 +1,22 @@
 "use server"
-import { getGoogleresult, googleShoppingResult, scrapeAmazonProducts} from "../scrape";
+import {  scrapeAmazonProducts} from "../scrape";
 import { connectToDB } from "../mongoose";
 import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utlis";
 import Product from "@/models/product.model";
 import { revalidatePath } from "next/cache";
 import { generateEmailBody, sendEmail } from "../nodemailer";
 import { User } from "@/types";
+import { redis } from "../../app/config/ratelimit";
+import { headers } from "next/headers";
+import { Ratelimit } from "@upstash/ratelimit";
+
+
+const ratelimit = new Ratelimit({ 
+  redis: redis, 
+  limiter: Ratelimit.fixedWindow(2, '200s'), 
+});
 export async function scrapeAndStoreProducts(producturl: string) {
+
   if (!producturl) return null;
   try {
       connectToDB();
@@ -108,6 +118,15 @@ export async function getSimilarProducts(productId: string) {
 }
 
 export async function addUserEmailToProduct(productId: string, userEmail: string) {
+   const ip = headers().get("x-forwarded-for") ;
+console.log(ip);
+const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip!);
+console.log(success, pending, limit, reset, remaining);
+
+if (!success) {
+  // Router.push("/blocked");
+  return {error: "bhai ab try mt kr"};
+}
   try {
     const product = await Product.findById(productId);
 

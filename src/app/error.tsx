@@ -3,7 +3,7 @@ export default function Error() {
  
     return (
       <div className="mx-auto w-full max-w-7xl px-2 md:px-4">
-      <div className="my-12 flex items-center justify-center px-2 md:my-24 md:px-0">
+      <div className="my-12 flex items-center justify-center px-2 md:my-44 md:px-0">
         <div className="lg:flex lg:items-center lg:space-x-10">
           <img
             src="https://illustrations.popsy.co/white/resistance-band.svg"
