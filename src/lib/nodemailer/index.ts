@@ -18,7 +18,7 @@ const Notification = {
 
 const ratelimit = new Ratelimit({ 
   redis: redis, 
-  limiter: Ratelimit.fixedWindow(1, '300s'), 
+  limiter: Ratelimit.fixedWindow(2, '300s'), 
 });
 
 export async function generateEmailBody(

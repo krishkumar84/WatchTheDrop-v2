@@ -13,7 +13,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 
 const ratelimit = new Ratelimit({ 
   redis: redis, 
-  limiter: Ratelimit.fixedWindow(2, '200s'), 
+  limiter: Ratelimit.fixedWindow(3, '60s'), 
 });
 export async function scrapeAndStoreProducts(producturl: string) {
 
