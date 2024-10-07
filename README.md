@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# WatchTheDrop
 
-## Getting Started
+**WatchTheDrop** is a full-stack price tracking application developed during a 24-hour hackathon at IIT Jodhpur. The platform monitors prices on e-commerce websites like Amazon and Flipkart, predicts future price drops using machine learning models, and provides real-time notifications to users. The project integrates several technologies including web scraping, server actions, and Redis for efficient data storage and rate limiting.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Price Tracking**: Monitor product prices on Amazon and Flipkart.
+- **Price Prediction**: Machine learning models predict future price trends.
+- **Real-time Notifications**: Users are alerted when price drops are detected.
+- **Web Scraping**: Efficient data extraction from multiple e-commerce platforms.
+- **User Authentication**: Next.js Server Actions are used for authentication and session management.
+- **Rate Limiting**: Redis is utilized to manage requests and prevent overuse.
+- **Graphical Price History**: Track price changes over time using dynamic charts.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js 14, Tailwind CSS, Framer
+- **Backend**: Node.js, Server Actions
+- **Database**: MongoDB
+- **Web Scraping**: Custom scraping scripts to fetch product data
+- **Machine Learning**: Price prediction using models
+- **Caching & Rate Limiting**: Redis
+- **Authentication**: Next.js Server Actions with Redis-based sessions
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+1. Clone the repository:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/your-username/watchthedrop.git
+   cd watchthedrop
+   npm install
+   npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Open the app in your browser at [http://localhost:3000](http://localhost:3000).
+2. Create an account to start tracking prices on Amazon and Flipkart.
+3. Add products to your watchlist, and the app will scrape the prices regularly.
+4. Receive notifications when there are significant price drops.
+5. View graphical charts for product price history and future predictions based on machine learning models.
 
-## Deploy on Vercel
+## Architecture
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js Server Actions**: Used for handling sensitive server-side operations like authentication and price tracking requests.
+- **Redis**: Used for caching and rate-limiting requests to prevent abuse of web scraping.
+- **MongoDB**: Stores user data, watchlists, and price histories.
+- **Web Scraping**: Scrapers retrieve real-time product data from Amazon and Flipkart.
+- **Machine Learning**: Implements price prediction models for future trends.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contributing
+
+Contributions are welcome! Follow the steps below to contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/NewFeature`).
+3. Commit your changes (`git commit -m 'Add some NewFeature'`).
+4. Push to the branch (`git push origin feature/NewFeature`).
+5. Open a pull request.
+   
+
