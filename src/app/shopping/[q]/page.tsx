@@ -26,7 +26,7 @@ interface Product {
   const ShoppingResult = () => {
   const title = usePathname();
   const router = useRouter();
-    console.log("herehello")
+    // console.log("herehello")
     console.log(title);
     const [shopResult, setShopResult] =useState([])
     useEffect(() => {

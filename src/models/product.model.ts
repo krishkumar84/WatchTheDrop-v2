@@ -20,6 +20,7 @@ const productSchema = new mongoose.Schema({
   description: { type: String },
   category: { type: String },
   reviewsCount: { type: Number },
+  stars: { type: Number },
   isOutOfStock: { type: Boolean, default: false },
   geturl: { type: String, required: false, unique: true },
   users: [
