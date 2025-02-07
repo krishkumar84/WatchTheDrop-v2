@@ -8,10 +8,12 @@ const  Home = async () => {
   const allProducts = await getAllProducts();
   return (
    <>
-   <section className=" md:pl-12 " style={{
+   <section className=" md:pl-12  " style={{
     backgroundImage: `url(${'/assets/images/Backgroundimage.png'})`,
     backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover'
+    backgroundSize: 'cover',
+    minHeight: '90vh',         
+    width: '100%',
   }}>
         <div className="flex max-xl:flex-col pb-12 gap-16" >
           <div className="flex flex-col pb-6 sm:pb-2 justify-center"> 

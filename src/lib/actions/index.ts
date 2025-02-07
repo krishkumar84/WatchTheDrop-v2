@@ -117,7 +117,7 @@ export async function getSimilarProducts(productId: string) {
         $match: { _id: { $ne: new Object(productId) } } 
       },
       { 
-        $sample: { size: 18 } 
+        $sample: { size: 20 } 
       }
     ]);
 
