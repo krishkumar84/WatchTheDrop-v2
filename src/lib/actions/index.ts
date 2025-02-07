@@ -103,15 +103,25 @@ export async function getSimilarProducts(productId: string) {
   try {
     connectToDB();
 
-    const currentProduct = await Product.findById(productId);
+    // const currentProduct = await Product.findById(productId);
 
-    if(!currentProduct) return null;
+    // if(!currentProduct) return null;
 
-    const similarProducts = await Product.find({
-      _id: { $ne: productId },
-    }).limit(6);
+    // const similarProducts = await Product.find({
+    //   _id: { $ne: productId },
+    // }).limit(6);
 
-    return similarProducts;
+    // return similarProducts;
+    const randomProducts = await Product.aggregate([
+      { 
+        $match: { _id: { $ne: new Object(productId) } } 
+      },
+      { 
+        $sample: { size: 18 } 
+      }
+    ]);
+
+    return randomProducts;
   } catch (error) {
     console.log(error);
   }

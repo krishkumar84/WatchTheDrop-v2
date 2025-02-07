@@ -1,5 +1,5 @@
 import Modal from "@/app/components/Modal";
-import { getProductById, getSimilarProducts } from "@/lib/actions"
+import { getProductById, getSimilarProducts } from "@/lib/actions";
 import PriceInfoCard from "@/app/components/PriceInfoCard";
 import ProductCard from "@/app/components/ProductCard";
 import { formatNumber } from "@/lib/utlis";
@@ -7,20 +7,19 @@ import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Toaster,toast } from "sonner";
+import { Toaster, toast } from "sonner";
+import { TruncatedDescription } from "@/app/components/description";
 
 type Props = {
-  params: { id: string }
-}
+  params: { id: string };
+};
 
 const ProductDetails = async ({ params: { id } }: Props) => {
-  
   const product: Product = await getProductById(id);
 
-  if(!product) redirect('/')
+  if (!product) redirect("/");
 
-   const similarProducts = await getSimilarProducts(id);
-   
+  const similarProducts = await getSimilarProducts(id);
 
   return (
     <div className="flex  flex-col gap-16 flex-wrap px-6 md:px-20 py-32">
@@ -173,7 +172,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
           </h3>
 
           <div className="flex flex-col gap-4">
-            {product?.description?.split("\n")}
+            <TruncatedDescription description={product?.description || ""} />
           </div>
         </div>
 
@@ -209,7 +208,7 @@ allLinks.forEach(ele=>{ // Loop through all links found on the page
       {similarProducts && similarProducts?.length > 0 && (
         <div className="py-14 flex flex-col gap-2 w-full">
           <p className="text-secondary text-[32px] font-semibold">
-            Similar Products
+            More Products
           </p>
 
           <div className="flex flex-wrap items-center justify-between gap-10 mt-7 w-full">
@@ -221,6 +220,6 @@ allLinks.forEach(ele=>{ // Loop through all links found on the page
       )}
     </div>
   );
-}
+};
 
-export default ProductDetails
+export default ProductDetails;
