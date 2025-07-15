@@ -211,7 +211,7 @@ allLinks.forEach(ele=>{ // Loop through all links found on the page
             More Products
           </p>
 
-          <div className="flex flex-wrap items-center justify-between gap-10 mt-7 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-16 gap-y-24 py-8 mt-7 w-full">
             {similarProducts?.reverse().map((product: any) => (
               <ProductCard key={product._id} product={product} />
             ))}
