@@ -14,7 +14,6 @@ import Product from "@/models/product.model";
 interface Product {
   position: number;
   title: string;
-  link: string;
   product_link: string;
   product_id: string;
   serpapi_product_api: string;
@@ -26,7 +25,7 @@ interface Product {
   reviews?: number;
   extensions: any[];
   thumbnail: string;
-  delivery: string;
+  delivery?: string;
 }
 
 import { redis } from "../../app/config/ratelimit";
@@ -157,7 +156,7 @@ export async function scrapeAmazonProducts(url: string) {
 }
 
 export async function googleProductSave(ProductGoogle: Product) {
-  console.log(ProductGoogle , "product google");
+  console.log(ProductGoogle, "product google");
   try {
     connectToDB();
     const fullurl = await getGoogleresult(ProductGoogle.title);
@@ -166,7 +165,7 @@ export async function googleProductSave(ProductGoogle: Product) {
     console.log(geturl);
 
     const data = {
-      url: ProductGoogle.link,
+      url: ProductGoogle.product_link,
       geturl,
       currency: "₹",
       image: ProductGoogle.thumbnail,
