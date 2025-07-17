@@ -147,6 +147,45 @@ export async function getEnhancedPriceData(productSlug: string | null) {
     const jsonData = JSON.parse(jsonMatch[1]);
     const productData = jsonData.props.pageProps.ogProduct;
 
+    // Calculate buying recommendation
+    const currentPrice = productData.price;
+    const lowestPrice = productData.lowest_price;
+    const averagePrice = productData.average_price;
+    const discount = productData.discount;
+    const dropChances = productData.drop_chances;
+
+    // Logic for buying recommendation
+    let buyingRecommendation = "";
+    let recommendationType = "";
+
+    if (currentPrice <= lowestPrice * 1.05) {
+      // Current price is within 5% of lowest price
+      buyingRecommendation =
+        "🟢 Excellent time to buy! Price is at or near its lowest.";
+      recommendationType = "excellent";
+    } else if (currentPrice <= averagePrice * 0.9) {
+      // Current price is 10% below average
+      buyingRecommendation = "🟢 Good time to buy! Price is below average.";
+      recommendationType = "good";
+    } else if (discount >= 20) {
+      // Good discount available
+      buyingRecommendation = "🟡 Decent time to buy! Good discount available.";
+      recommendationType = "decent";
+    } else if (dropChances >= 70) {
+      // High chance of price drop
+      buyingRecommendation =
+        "🔴 Consider waiting! High chance of price drop soon.";
+      recommendationType = "wait";
+    } else if (currentPrice >= averagePrice * 1.1) {
+      // Price is 10% above average
+      buyingRecommendation = "🔴 Consider waiting! Price is above average.";
+      recommendationType = "wait";
+    } else {
+      // Neutral situation
+      buyingRecommendation = "🟡 Moderate time to buy. Price is average.";
+      recommendationType = "moderate";
+    }
+
     return {
       currentPrice: productData.price,
       lowestPrice: productData.lowest_price,
@@ -159,6 +198,35 @@ export async function getEnhancedPriceData(productSlug: string | null) {
       category: productData.category.name,
       rating: productData.rating,
       ratingCount: productData.rating_count,
+      // New buying recommendation features
+      buyingRecommendation,
+      recommendationType,
+      // Enhanced product details
+      productId: productData.id,
+      productSlug: productData.slug,
+      productImage: productData.image,
+      mrp: productData.mrp,
+      isPrime: productData.is_prime,
+      features: productData.features || [],
+      // Store details
+      storeSlug: productData.store.slug,
+      storeImage: productData.store.image,
+      storePrimeImage: productData.store.prime_image,
+      // Country/Currency info
+      currencyIcon: productData.country?.currency_icon || "₹",
+      countryCode: productData.country?.country_code || "IN",
+      // Data freshness - when was the data last updated
+      priceFetchedAt: productData.price_fetched_at,
+      historyFetchedAt: productData.history_fetched_at,
+      updatedAt: productData.updated_at,
+      // Additional insights
+      priceDrops: productData.price_drops || 0,
+      priceRises: productData.price_rises || 0,
+      totalPriceChanges:
+        (productData.price_drops || 0) + (productData.price_rises || 0),
+      // Similar products data
+      similarDealsCount: productData.similar_deals?.length || 0,
+      similarProductsCount: productData.similar_products?.length || 0,
     };
   } catch (error) {
     console.error("Error fetching enhanced price data:", error);

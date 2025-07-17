@@ -44,13 +44,26 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 {product.title}
               </p>
 
-              <Link
-                href={product.url}
-                target="_blank"
-                className="text-base text-black opacity-50"
-              >
-                Visit Product
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link
+                  href={product.url}
+                  target="_blank"
+                  className="text-base text-black opacity-50"
+                >
+                  Visit Product
+                </Link>
+                {enhancedPriceData?.priceFetchedAt && (
+                  <span className="text-xs text-gray-400">
+                    Price updated:{" "}
+                    {new Date(
+                      enhancedPriceData.priceFetchedAt
+                    ).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-3">
@@ -84,6 +97,12 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                   height={20}
                 />
               </div>
+
+              {enhancedPriceData?.category && (
+                <span className="text-xs text-gray-400 ml-2">
+                  {enhancedPriceData.category}
+                </span>
+              )}
             </div>
           </div>
 
@@ -135,10 +154,15 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 </div>
               </div>
 
-              <p className="text-sm text-black opacity-50">
-                <span className="text-primary-green font-semibold">93% </span>{" "}
-                of buyers have recommeded this.
-              </p>
+              {enhancedPriceData?.dropChances && (
+                <p className="text-sm text-gray-600">
+                  📈{" "}
+                  <span className="font-medium">
+                    {enhancedPriceData.dropChances}%
+                  </span>{" "}
+                  chance of price drop
+                </p>
+              )}
             </div>
           </div>
 
@@ -176,28 +200,101 @@ const ProductDetails = async ({ params: { id } }: Props) => {
 
             {/* 🚀 Enhanced price insights */}
             {enhancedPriceData && (
-              <div className="flex gap-5 flex-wrap mt-4">
-                {enhancedPriceData.discount > 0 && (
-                  <div className="bg-green-100 px-4 py-2 rounded-lg">
-                    <p className="text-green-800 font-semibold">
-                      🔥 {enhancedPriceData.discount.toFixed(1)}% Discount
-                    </p>
-                  </div>
-                )}
+              <div className="flex flex-col gap-4 mt-4">
+                {/* Buying Recommendation - Most Important */}
+                <div
+                  className={`px-6 py-4 rounded-lg border-2 ${
+                    enhancedPriceData.recommendationType === "excellent"
+                      ? "bg-green-50 border-green-200"
+                      : enhancedPriceData.recommendationType === "good"
+                      ? "bg-green-50 border-green-200"
+                      : enhancedPriceData.recommendationType === "decent"
+                      ? "bg-yellow-50 border-yellow-200"
+                      : enhancedPriceData.recommendationType === "moderate"
+                      ? "bg-blue-50 border-blue-200"
+                      : "bg-red-50 border-red-200"
+                  }`}
+                >
+                  <h4 className="font-bold text-lg mb-2">
+                    💡 Buying Recommendation
+                  </h4>
+                  <p
+                    className={`font-semibold text-lg ${
+                      enhancedPriceData.recommendationType === "excellent"
+                        ? "text-green-800"
+                        : enhancedPriceData.recommendationType === "good"
+                        ? "text-green-700"
+                        : enhancedPriceData.recommendationType === "decent"
+                        ? "text-yellow-700"
+                        : enhancedPriceData.recommendationType === "moderate"
+                        ? "text-blue-700"
+                        : "text-red-700"
+                    }`}
+                  >
+                    {enhancedPriceData.buyingRecommendation}
+                  </p>
+                </div>
 
-                {enhancedPriceData.dropChances > 50 && (
-                  <div className="bg-orange-100 px-4 py-2 rounded-lg">
-                    <p className="text-orange-800 font-semibold">
-                      📈 {enhancedPriceData.dropChances}% chance of price drop
-                    </p>
-                  </div>
-                )}
+                {/* Other insights */}
+                <div className="flex gap-5 flex-wrap">
+                  {/* Show if it's close to lowest price */}
+                  {enhancedPriceData.currentPrice <=
+                    enhancedPriceData.lowestPrice * 1.1 && (
+                    <div className="bg-lime-100 px-4 py-2 rounded-lg">
+                      <p className="text-lime-800 font-semibold">
+                        🎯 Near lowest price ever!
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-                {enhancedPriceData.inStock && (
-                  <div className="bg-blue-100 px-4 py-2 rounded-lg">
-                    <p className="text-blue-800 font-semibold">✅ In Stock</p>
+                {/* Smart Insights Section */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-lg border border-blue-200 mt-4">
+                  <h5 className="font-bold text-gray-800 mb-3 flex items-center">
+                    🧠 Smart Insights
+                  </h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-700">
+                        <strong>Savings Potential:</strong> You could save up to{" "}
+                        <span className="text-green-600 font-semibold">
+                          ₹
+                          {formatNumber(
+                            enhancedPriceData.highestPrice -
+                              enhancedPriceData.lowestPrice
+                          )}
+                        </span>{" "}
+                        by buying at the right time
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-700">
+                        🎯 <strong>Current vs Average:</strong> Price is{" "}
+                        {enhancedPriceData.currentPrice <
+                        enhancedPriceData.averagePrice ? (
+                          <span className="text-green-600 font-semibold">
+                            ₹
+                            {formatNumber(
+                              enhancedPriceData.averagePrice -
+                                enhancedPriceData.currentPrice
+                            )}{" "}
+                            below
+                          </span>
+                        ) : (
+                          <span className="text-red-600 font-semibold">
+                            ₹
+                            {formatNumber(
+                              enhancedPriceData.currentPrice -
+                                enhancedPriceData.averagePrice
+                            )}{" "}
+                            above
+                          </span>
+                        )}{" "}
+                        average
+                      </p>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             )}
           </div>
