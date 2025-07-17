@@ -2,7 +2,7 @@ import Modal from "@/app/components/Modal";
 import { getProductById, getSimilarProducts } from "@/lib/actions";
 import PriceInfoCard from "@/app/components/PriceInfoCard";
 import ProductCard from "@/app/components/ProductCard";
-import { formatNumber } from "@/lib/utlis";
+import { formatNumber, getEnhancedPriceData } from "@/lib/utlis";
 import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,6 +20,9 @@ const ProductDetails = async ({ params: { id } }: Props) => {
   if (!product) redirect("/");
 
   const similarProducts = await getSimilarProducts(id);
+
+  // 🚀 Get enhanced price data from PriceHistoryApp using the stored slug
+  const enhancedPriceData = await getEnhancedPriceData(product.geturl);
 
   return (
     <div className="flex  flex-col gap-16 flex-wrap px-6 md:px-20 py-32">
@@ -87,11 +90,22 @@ const ProductDetails = async ({ params: { id } }: Props) => {
           <div className="flex items-center flex-wrap gap-10 py-6 border-y border-y-[#E4E4E4]">
             <div className="flex flex-col gap-2">
               <p className="text-[34px] text-secondary font-bold">
-                {product.currency} {formatNumber(product.currentPrice)}
+                {product.currency}{" "}
+                {formatNumber(
+                  enhancedPriceData?.currentPrice || product.currentPrice
+                )}
               </p>
               <p className="text-[21px] text-black opacity-50 line-through">
-                {product.currency} {formatNumber(product.highestPrice)}
+                {product.currency}{" "}
+                {formatNumber(
+                  enhancedPriceData?.highestPrice || product.highestPrice
+                )}
               </p>
+              {enhancedPriceData?.discount && (
+                <p className="text-green-600 font-semibold">
+                  {enhancedPriceData.discount.toFixed(1)}% OFF
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col gap-4">
@@ -134,31 +148,58 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 title="Current Price"
                 iconSrc="/assets/icons/price-tag.svg"
                 value={`${product.currency} ${formatNumber(
-                  product.currentPrice
+                  enhancedPriceData?.currentPrice || product.currentPrice
                 )}`}
               />
               <PriceInfoCard
                 title="Average Price"
                 iconSrc="/assets/icons/chart.svg"
                 value={`${product.currency} ${formatNumber(
-                  product.averagePrice
+                  enhancedPriceData?.averagePrice || product.averagePrice
                 )}`}
               />
               <PriceInfoCard
                 title="Highest Price"
                 iconSrc="/assets/icons/arrow-up.svg"
                 value={`${product.currency} ${formatNumber(
-                  product.highestPrice
+                  enhancedPriceData?.highestPrice || product.highestPrice
                 )}`}
               />
               <PriceInfoCard
                 title="Lowest Price"
                 iconSrc="/assets/icons/arrow-down.svg"
                 value={`${product.currency} ${formatNumber(
-                  product.lowestPrice
+                  enhancedPriceData?.lowestPrice || product.lowestPrice
                 )}`}
               />
             </div>
+
+            {/* 🚀 Enhanced price insights */}
+            {enhancedPriceData && (
+              <div className="flex gap-5 flex-wrap mt-4">
+                {enhancedPriceData.discount > 0 && (
+                  <div className="bg-green-100 px-4 py-2 rounded-lg">
+                    <p className="text-green-800 font-semibold">
+                      🔥 {enhancedPriceData.discount.toFixed(1)}% Discount
+                    </p>
+                  </div>
+                )}
+
+                {enhancedPriceData.dropChances > 50 && (
+                  <div className="bg-orange-100 px-4 py-2 rounded-lg">
+                    <p className="text-orange-800 font-semibold">
+                      📈 {enhancedPriceData.dropChances}% chance of price drop
+                    </p>
+                  </div>
+                )}
+
+                {enhancedPriceData.inStock && (
+                  <div className="bg-blue-100 px-4 py-2 rounded-lg">
+                    <p className="text-blue-800 font-semibold">✅ In Stock</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <Modal productId={id} />
