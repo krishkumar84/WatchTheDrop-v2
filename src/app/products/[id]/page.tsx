@@ -48,12 +48,12 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 <Link
                   href={product.url}
                   target="_blank"
-                  className="text-base text-black opacity-50"
+                  className="text-base text-black opacity-90"
                 >
                   Visit Product
                 </Link>
                 {enhancedPriceData?.priceFetchedAt && (
-                  <span className="text-xs text-gray-400">
+                  <span className="text-sm text-gray-500">
                     Price updated:{" "}
                     {new Date(
                       enhancedPriceData.priceFetchedAt
@@ -99,8 +99,8 @@ const ProductDetails = async ({ params: { id } }: Props) => {
               </div>
 
               {enhancedPriceData?.category && (
-                <span className="text-xs text-gray-400 ml-2">
-                  {enhancedPriceData.category}
+                <span className="text-sm text-gray-500 ml-2">
+                  category: {enhancedPriceData.category}
                 </span>
               )}
             </div>
@@ -202,33 +202,21 @@ const ProductDetails = async ({ params: { id } }: Props) => {
             {enhancedPriceData && (
               <div className="flex flex-col gap-4 mt-4">
                 {/* Buying Recommendation - Most Important */}
-                <div
-                  className={`px-6 py-4 rounded-lg border-2 ${
-                    enhancedPriceData.recommendationType === "excellent"
-                      ? "bg-green-50 border-green-200"
-                      : enhancedPriceData.recommendationType === "good"
-                      ? "bg-green-50 border-green-200"
-                      : enhancedPriceData.recommendationType === "decent"
-                      ? "bg-yellow-50 border-yellow-200"
-                      : enhancedPriceData.recommendationType === "moderate"
-                      ? "bg-blue-50 border-blue-200"
-                      : "bg-red-50 border-red-200"
-                  }`}
-                >
-                  <h4 className="font-bold text-lg mb-2">
+                <div className="p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-800 mb-2">
                     💡 Buying Recommendation
                   </h4>
                   <p
-                    className={`font-semibold text-lg ${
+                    className={`font-medium ${
                       enhancedPriceData.recommendationType === "excellent"
-                        ? "text-green-800"
-                        : enhancedPriceData.recommendationType === "good"
                         ? "text-green-700"
+                        : enhancedPriceData.recommendationType === "good"
+                        ? "text-green-600"
                         : enhancedPriceData.recommendationType === "decent"
-                        ? "text-yellow-700"
+                        ? "text-yellow-600"
                         : enhancedPriceData.recommendationType === "moderate"
-                        ? "text-blue-700"
-                        : "text-red-700"
+                        ? "text-blue-600"
+                        : "text-red-600"
                     }`}
                   >
                     {enhancedPriceData.buyingRecommendation}
@@ -249,14 +237,17 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 </div>
 
                 {/* Smart Insights Section */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-lg border border-blue-200 mt-4">
-                  <h5 className="font-bold text-gray-800 mb-3 flex items-center">
+                <div className="p-4 pt-0 rounded-lg">
+                  <h5 className="font-semibold text-gray-800 mb-3">
                     🧠 Smart Insights
                   </h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-gray-700">
-                        <strong>Savings Potential:</strong> You could save up to{" "}
+                      <p className="text-gray-600">
+                        <span className="font-medium text-gray-800">
+                          Savings Potential:
+                        </span>{" "}
+                        You could save up to{" "}
                         <span className="text-green-600 font-semibold">
                           ₹
                           {formatNumber(
@@ -268,8 +259,11 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-700">
-                        🎯 <strong>Current vs Average:</strong> Price is{" "}
+                      <p className="text-gray-600">
+                        <span className="font-medium text-gray-800">
+                          Current vs Average:
+                        </span>{" "}
+                        Price is{" "}
                         {enhancedPriceData.currentPrice <
                         enhancedPriceData.averagePrice ? (
                           <span className="text-green-600 font-semibold">
@@ -314,6 +308,11 @@ const ProductDetails = async ({ params: { id } }: Props) => {
           </div>
         </div>
 
+          <Link
+           href={product.url}
+           target="_blank"
+           className="text-base text-white"
+         >
         <button className="py-4 px-4 bg-black hover:bg-opacity-70 rounded-[30px] text-white text-lg font-semibold w-fit mx-auto flex items-center justify-center gap-3 min-w-[200px]">
           <Image
             src="/assets/icons/bag.svg"
@@ -321,11 +320,9 @@ const ProductDetails = async ({ params: { id } }: Props) => {
             width={22}
             height={22}
           />
-
-          <Link href="/" className="text-base text-white">
             Buy Now
-          </Link>
         </button>
+          </Link>
       </div>
       {product.geturl ? ( // Check if graphUrl is not null and has a value
         <div // Render a <div> element
