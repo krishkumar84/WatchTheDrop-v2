@@ -2,8 +2,6 @@
 // import Link from 'next/link'
 // import React from 'react'
 
-
-
 // const navIcons = [
 //     { src: '/assets/icons/search.svg', alt: 'search' },
 //     { src: '/assets/icons/black-heart.svg', alt: 'heart' },
@@ -13,7 +11,7 @@
 //   return (    <header className="w-full">
 //   <nav className="flex justify-between items-center px-6 md:px-20 py-4">
 //     <Link href="/" className="flex items-center gap-1">
-//       <Image 
+//       <Image
 //         src="/assets/icons/logo.svg"
 //         width={27}
 //         height={27}
@@ -27,7 +25,7 @@
 
 //     <div className="flex items-center gap-5">
 //       {navIcons.map((icon) => (
-//         <Image 
+//         <Image
 //           key={icon.alt}
 //           src={icon.src}
 //           alt={icon.alt}
@@ -41,18 +39,18 @@
 // </header>
 // )
 //  }
-'use client'
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { WobbleButton } from "./WobbleButton";
 import { motion } from "framer-motion";
 import { DURATION, Delay } from "./constants";
-import { useMediaQuery } from 'react-responsive';
+import { useMediaQuery } from "react-responsive";
 
 interface NavItem {
-  id:string,
-  title:string,
-  href:string
+  id: string;
+  title: string;
+  href: string;
 }
 export const Navbar = () => {
   const isSmallDevice = useMediaQuery({ maxWidth: 768 });
@@ -61,12 +59,12 @@ export const Navbar = () => {
       id: "1",
       title: "products",
       href: "#home",
-    }
+    },
   ];
   return (
-    <nav className="fixed drop-shadow-lg w-full z-20 mt-2 lg:mt-8">
+    <nav className="fixed drop-shadow-lg w-full z-20 mt-2 lg:mt-8 px-4">
       <motion.div
-        className="w-fit p-3 bg-white rounded-full flex justify-between items-center gap-2 sm:gap-12 mx-auto"
+        className="w-fit max-w-full p-2 sm:p-3 bg-white rounded-full flex justify-between items-center gap-2 sm:gap-12 mx-auto"
         initial={{
           rotateX: 120,
           opacity: 0,
@@ -81,8 +79,11 @@ export const Navbar = () => {
           },
         }}
       >
-        <Link href="/" className="flex pr-16 text-gray-900 sm:pr-0 pl-3 items-center">
-          <span className="font-bold text-2xl">WatchTheDrop</span>
+        <Link
+          href="/"
+          className="flex pr-4 sm:pr-0 text-gray-900 pl-2 sm:pl-3 items-center"
+        >
+          <span className="font-bold text-lg sm:text-2xl">WatchTheDrop</span>
         </Link>
         <ul className=" hidden sm:flex gap-2">
           {navItems.map((item, index) => {
@@ -98,22 +99,24 @@ export const Navbar = () => {
             );
           })}
         </ul>
-        {isSmallDevice ? <Link href="#explore" className=" rounded-full">
-          <WobbleButton
-            title="Explore"
-            textStyle={{ fontSize: "1rem" }}
-            type="sm"
-          />
-        </Link> : (<Link href="#explore" className=" rounded-full">
-          <WobbleButton
-            title="Explore"
-            textStyle={{ fontSize: "1rem" }}
-            type="md"
-          />
-        </Link> )}
-        
+        {isSmallDevice ? (
+          <Link href="#explore" className=" rounded-full">
+            <WobbleButton
+              title="Explore"
+              textStyle={{ fontSize: "1rem" }}
+              type="sm"
+            />
+          </Link>
+        ) : (
+          <Link href="#explore" className=" rounded-full">
+            <WobbleButton
+              title="Explore"
+              textStyle={{ fontSize: "1rem" }}
+              type="md"
+            />
+          </Link>
+        )}
       </motion.div>
     </nav>
   );
 };
-
