@@ -11,20 +11,73 @@ const THRESHOLD_PERCENTAGE = 40;
 
 export function extractPrice(...elements: any) {
   for (const element of elements) {
+    if (!element || typeof element.text !== "function") continue;
+
     const priceText = element.text().trim();
+    console.log("🔍 Extracting price from text:", priceText);
 
     if (priceText) {
-      const cleanPrice = priceText.replace(/[^\d.]/g, "");
+      // Remove currency symbols and non-numeric characters except dots and commas
+      const cleanPrice = priceText.replace(/[^\d.,]/g, "");
+      console.log("🧹 Clean price text:", cleanPrice);
 
       let firstPrice;
 
       if (cleanPrice) {
-        firstPrice = cleanPrice.match(/\d+\.\d{2}/)?.[0];
+        // For Indian pricing, handle comma-separated numbers first
+        // Check for comma patterns like 2,999, 14,999 (Indian number formatting)
+        const commaMatch = cleanPrice
+          .match(/\d{1,2},\d{3}/)?.[0]
+          ?.replace(",", "");
+
+        // Check for larger comma patterns like 1,29,999 (Indian lakh format)
+        const lakhMatch = cleanPrice
+          .match(/\d{1,2},\d{2},\d{3}/)?.[0]
+          ?.replace(/,/g, "");
+
+        // Check for decimal patterns like 2999.00, 29.99
+        const decimalMatch = cleanPrice.match(/\d+\.\d{1,2}/)?.[0];
+
+        // Check for simple whole numbers like 2999, 29999
+        const wholeNumberMatch = cleanPrice.match(/^\d{3,}$/)?.[0];
+
+        console.log("🔍 Pattern matches:");
+        console.log("  - Comma match (X,XXX):", commaMatch);
+        console.log("  - Lakh match (X,XX,XXX):", lakhMatch);
+        console.log("  - Decimal match:", decimalMatch);
+        console.log("  - Whole number match:", wholeNumberMatch);
+
+        // Prioritize based on Indian pricing patterns
+        if (lakhMatch && parseInt(lakhMatch) >= 100) {
+          // Handle Indian lakh format like 1,29,999
+          firstPrice = lakhMatch;
+          console.log("✅ Using lakh pattern:", firstPrice);
+        } else if (commaMatch && parseInt(commaMatch) >= 100) {
+          // Handle comma-separated Indian numbers like 2,999
+          firstPrice = commaMatch;
+          console.log("✅ Using comma pattern:", firstPrice);
+        } else if (wholeNumberMatch && parseInt(wholeNumberMatch) >= 100) {
+          // If we have a clean whole number ≥ 100, likely the correct price
+          firstPrice = wholeNumberMatch;
+          console.log("✅ Using whole number pattern:", firstPrice);
+        } else if (decimalMatch && parseFloat(decimalMatch) >= 100) {
+          // Only use decimal if it's a substantial amount (not 2.99)
+          firstPrice = decimalMatch;
+          console.log("✅ Using decimal pattern:", firstPrice);
+        } else {
+          // Fallback to any number found
+          firstPrice = cleanPrice.match(/\d+/)?.[0];
+          console.log("⚠️ Using fallback pattern:", firstPrice);
+        }
       }
 
-      return firstPrice || cleanPrice;
+      if (firstPrice) {
+        console.log("💰 Final extracted price:", firstPrice);
+        return firstPrice;
+      }
     }
   }
+  console.log("❌ No price found in any element");
   return "";
 }
 
@@ -231,5 +284,43 @@ export async function getEnhancedPriceData(productSlug: string | null) {
   } catch (error) {
     console.error("Error fetching enhanced price data:", error);
     return null;
+  }
+}
+
+// Helper function to clean Amazon URLs
+export function cleanAmazonUrl(url: string): string {
+  try {
+    // Extract product ID from various Amazon URL formats
+    // More comprehensive regex to handle different URL patterns
+    const productIdMatch = url.match(
+      /\/dp\/([A-Z0-9]{10})|\/gp\/product\/([A-Z0-9]{10})|\/product\/([A-Z0-9]{10})|\/([A-Z0-9]{10})\/|\/([A-Z0-9]{10})\?|\/([A-Z0-9]{10})$/
+    );
+
+    if (productIdMatch) {
+      const productId =
+        productIdMatch[1] ||
+        productIdMatch[2] ||
+        productIdMatch[3] ||
+        productIdMatch[4] ||
+        productIdMatch[5] ||
+        productIdMatch[6];
+
+      // Determine the Amazon domain
+      const domain = url.includes("amazon.in")
+        ? "amazon.in"
+        : url.includes("amazon.com")
+        ? "amazon.com"
+        : url.includes("amazon.co.uk")
+        ? "amazon.co.uk"
+        : "amazon.com";
+
+      return `https://www.${domain}/dp/${productId}`;
+    }
+
+    // If no product ID found, return original URL without parameters
+    return url.split("?")[0].split("#")[0];
+  } catch (error) {
+    console.error("Error cleaning Amazon URL:", error);
+    return url;
   }
 }
