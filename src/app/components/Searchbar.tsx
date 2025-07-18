@@ -74,10 +74,10 @@ const Searchbar = () => {
             setTimeout(() => resolve({ name: "Product" }), 2000)
           );
         toast.promise(promise, {
-          loading: "🔍 Analyzing product...",
+          loading: "Analyzing product... takes upto 15sec",
           position: "top-center",
-          success: () => "✅ Redirecting to product page",
-          error: "❌ Failed to analyze product",
+          success: () => "Redirecting to product page",
+          error: "Failed to analyze product",
         });
 
         const product = await scrapeAndStoreProducts(searchPrompt);
